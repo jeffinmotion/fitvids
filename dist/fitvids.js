@@ -11,10 +11,13 @@ var selectors = [
 ]
 
 var css = '.fluid-width-video-wrapper{width:100%;position:relative;padding:0;}.fluid-width-video-wrapper iframe,.fluid-width-video-wrapper object,.fluid-width-video-wrapper embed {position:absolute;top:0;left:0;width:100%;height:100%;}'
+var localDocument = document
 
 module.exports = function (parentSelector, opts) {
 	parentSelector = parentSelector || 'body'
 	opts = opts || {}
+	// initialize the global localDocument
+	localDocument = opts.document || document
 
 	if (isObject(parentSelector)) {
 		opts = parentSelector
@@ -27,8 +30,8 @@ module.exports = function (parentSelector, opts) {
 	var containers = queryAll(parentSelector)
 	if (!hasLength(containers)) return
 
-	if (!document.getElementById('fit-vids-style')) {
-		var head = document.head || document.getElementsByTagName('head')[0]
+	if (!localDocument.getElementById('fit-vids-style')) {
+		var head = localDocument.head || localDocument.getElementsByTagName('head')[0]
 		head.appendChild(styles())
 	}
 
@@ -52,7 +55,7 @@ module.exports = function (parentSelector, opts) {
 function queryAll (el, selector) {
 	if (typeof el === 'string') {
 		selector = el
-		el = document
+		el = localDocument
 	}
 	return Array.prototype.slice.call(el.querySelectorAll(selector))
 }
@@ -79,7 +82,7 @@ function wrap (el) {
 	el.removeAttribute('width')
 	el.removeAttribute('height')
 
-	var wrapper = document.createElement('div')
+	var wrapper = localDocument.createElement('div')
 	el.parentNode.insertBefore(wrapper, el)
 	wrapper.className = 'fluid-width-video-wrapper'
 	wrapper.style.paddingTop = (aspect * 100) + '%'
@@ -87,7 +90,7 @@ function wrap (el) {
 }
 
 function styles () {
-	var div = document.createElement('div')
+	var div = localDocument.createElement('div')
 	div.innerHTML = '<p>x</p><style id="fit-vids-style">' + css + '</style>'
 	return div.childNodes[1]
 }

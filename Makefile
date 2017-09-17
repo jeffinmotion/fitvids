@@ -17,18 +17,18 @@ DIST = dist
 
 build: node_modules index.js
 	@mkdir -p $(DIST)
-	@browserify index.js --standalone fitvids -o $(DIST)/fitvids.js
-	@uglifyjs $(DIST)/fitvids.js -o $(DIST)/fitvids.min.js
+	@$(BIN)/browserify index.js --standalone fitvids -o $(DIST)/fitvids.js
+	@$(BIN)/uglifyjs $(DIST)/fitvids.js -o $(DIST)/fitvids.min.js
 
 node_modules: package.json
 	@npm install
 	@touch node_modules
 
 test:
-	@hihat test.js
+	@$(BIN)/hihat test.js
 
 lint:
-	@xo index.js test.js
+	@$(BIN)/xo index.js test.js
 
 size: build
 	@cat $(DIST)/fitvids.js | gzip -9 | wc -c
